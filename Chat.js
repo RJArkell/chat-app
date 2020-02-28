@@ -3,6 +3,9 @@ import { View, Text, Platform, AsyncStorage } from "react-native";
 import { GiftedChat, InputToolbar, Bubble } from 'react-native-gifted-chat';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import NetInfo from "@react-native-community/netinfo";
+import MapView from "react-native-maps";
+import CustomActions from "./CustomActions";
+
 
 const firebase = require('firebase');
 require('firebase/firestore');
@@ -103,7 +106,9 @@ export default class Chat extends React.Component {
       text: this.state.messages[0].text || '',
       createdAt: this.state.messages[0].createdAt,
       user: this.state.messages[0].user,
-      uid: this.state.uid
+      uid: this.state.uid,
+      location: this.state.messages[0].location || null,
+      image: this.state.messages[0].image || ''
     });
   }
 
@@ -153,6 +158,8 @@ export default class Chat extends React.Component {
         _id: data._id,
         text: data.text,
         createdAt: data.createdAt.toDate(),
+        image: data.image || '',
+        location: data.location || null,
         user: data.user
       });
     });
@@ -166,6 +173,28 @@ export default class Chat extends React.Component {
       title: navigation.state.params.name
     };
   };
+
+  renderCustomActions = props => {
+    return <CustomActions {...props} />;
+  };
+
+  renderCustomView(props) {
+    const { currentMessage } = props;
+    if (currentMessage.location) {
+      return (
+        <MapView
+          style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
+          region={{
+            latitude: currentMessage.location.latitude,
+            longitude: currentMessage.location.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421
+          }}
+        />
+      );
+    }
+    return null;
+  }
 
   renderInputToolbar(props) {
     if (this.state.isConnected) {
@@ -197,6 +226,8 @@ export default class Chat extends React.Component {
         <GiftedChat
           renderInputToolbar={this.renderInputToolbar.bind(this)}
           renderBubble={this.renderBubble.bind(this)}
+          renderActions={this.renderCustomActions.bind(this)}
+          renderCustomView={this.renderCustomView.bind(this)}
           messages={this.state.messages}
           onSend={messages => this.onSend(messages)}
           user={this.state.user}
