@@ -12,6 +12,7 @@ export default class Start extends React.Component {
     }
   }
 
+  //Renders start screen
   render() {
     return (
       <ImageBackground source={require("./assets/backgroundImage.png")} style={styles.backImage}>

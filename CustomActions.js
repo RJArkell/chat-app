@@ -12,6 +12,7 @@ export default class CustomActions extends Component {
     super(props);
   }
 
+  //Takes photo with device camera
   takePhoto = async () => {
     try {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL, Permissions.CAMERA);
@@ -29,6 +30,7 @@ export default class CustomActions extends Component {
     }
   }
 
+  //Gets device's location
   getLocation = async () => {
     try {
       const { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -55,6 +57,7 @@ export default class CustomActions extends Component {
     }
   }
 
+  //Gets images from device's gallery
   pickImage = async () => {
     try {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -72,6 +75,7 @@ export default class CustomActions extends Component {
     }
   }
 
+  //Calls action sheet menu when + button is pressed
   onActionPress = () => {
     const options = ['Choose Image from Library', 'Take Picture', 'Send Location', 'Cancel'];
     const cancelButtonIndex = options.length - 1;
@@ -96,6 +100,7 @@ export default class CustomActions extends Component {
     );
   }
 
+  //Uploads images to database
   uploadImage = async (uri) => {
     try {
       const blob = await new Promise((resolve, reject) => {
@@ -122,8 +127,6 @@ export default class CustomActions extends Component {
       console.log(err.message);
     }
   }
-
-
 
   render() {
     return (

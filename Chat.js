@@ -24,6 +24,7 @@ export default class Chat extends React.Component {
       uid: 0
     }
 
+    //Initializes database
     let firebaseConfig = {
       apiKey: "AIzaSyBiSms1NYTwB39qOCEZlPlVauMshUSvpn0",
       authDomain: "chat-app-99203.firebaseapp.com",
@@ -42,6 +43,7 @@ export default class Chat extends React.Component {
     this.referenceMessages = firebase.firestore().collection("messages");
   }
 
+  //Checks if app is online
   componentDidMount() {
     NetInfo.fetch().then(state => {
       if (state.isConnected) {
@@ -81,11 +83,13 @@ export default class Chat extends React.Component {
     });
   }
 
+  //Unmounts component
   componentWillUnmount() {
     this.authUnsubscribe();
     this.unsubscribe();
   }
 
+  //Sets default user
   setUser = (_id, name = "Anonymous") => {
     this.setState({
       user: {
@@ -96,6 +100,7 @@ export default class Chat extends React.Component {
     });
   }
 
+  //Adds messages to database
   addMessage() {
     this.referenceMessages.add({
       _id: this.state.messages[0]._id,
@@ -108,6 +113,7 @@ export default class Chat extends React.Component {
     });
   }
 
+  //Retrieves messages from AsyncStorage
   getMessages = async () => {
     let messages = [];
     try {
@@ -120,6 +126,7 @@ export default class Chat extends React.Component {
     }
   };
 
+  //Deletes messages from AsyncStorage (not currently used)
   deleteMessages = async () => {
     try {
       await AsyncStorage.removeItem("messages");
@@ -128,6 +135,7 @@ export default class Chat extends React.Component {
     }
   };
 
+  //Saves messages to AsyncStorage
   saveMessages = async () => {
     try {
       await AsyncStorage.setItem('messages', JSON.stringify(this.state.messages));
@@ -136,6 +144,7 @@ export default class Chat extends React.Component {
     }
   };
 
+  //Saves message state to database
   onSend(messages = []) {
     this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, messages)
@@ -146,6 +155,7 @@ export default class Chat extends React.Component {
       });
   }
 
+  //Retrieves all messages from database
   onCollectionUpdate = (querySnapshot) => {
     const messages = [];
     try {
@@ -169,16 +179,19 @@ export default class Chat extends React.Component {
     }
   };
 
+  //Sets username as title at top of page
   static navigationOptions = ({ navigation }) => {
     return {
       title: navigation.state.params.name
     };
   };
 
+  //Renders + menu button for map and image chat options
   renderCustomActions = props => {
     return <CustomActions {...props} />;
   };
 
+  //Shows location on map
   renderCustomView(props) {
     const { currentMessage } = props;
     if (currentMessage.location) {
@@ -197,6 +210,7 @@ export default class Chat extends React.Component {
     return null;
   }
 
+  //Hides message input field when offline
   renderInputToolbar(props) {
     if (this.state.isConnected) {
       return (
@@ -207,6 +221,7 @@ export default class Chat extends React.Component {
     }
   }
 
+  //Renders chat bubbles
   renderBubble(props) {
     return (
       <Bubble
