@@ -45,3 +45,5 @@ To set up a database with Firebase you will need to follow these steps:
 "react-native-web": "~0.11.7",
 "react-navigation": "^4.2.2",
 "react-navigation-stack": "^2.2.2"
+
+https://trello.com/b/YN6V8nbI/native-chat-app
