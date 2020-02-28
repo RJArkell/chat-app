@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Platform, AsyncStorage } from "react-native";
+import { View, Text, Platform, AsyncStorage } from "react-native";
 import { GiftedChat, InputToolbar, Bubble } from 'react-native-gifted-chat';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import NetInfo from "@react-native-community/netinfo";
@@ -308,7 +308,7 @@ export default class Chat extends React.Component {
   */
   render() {
     return (
-      <View style={[styles.container, { backgroundColor: this.props.navigation.state.params.colorScheme }]}>
+      <View style={{ flex: 1, backgroundColor: this.props.navigation.state.params.color }}>
         <Text>{this.state.loggedInText}</Text>
         <GiftedChat
           renderInputToolbar={this.renderInputToolbar.bind(this)}
@@ -324,10 +324,3 @@ export default class Chat extends React.Component {
     )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000000",
-  }
-});
