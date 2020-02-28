@@ -18,14 +18,14 @@ export default class CustomActions extends Component {
       if (status === "granted") {
         let result = await ImagePicker.launchCameraAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images
-        }).catch(err => console.error(err.message));
+        }).catch(err => console.log(err.message));
         if (!result.cancelled) {
           const chosenImage = await this.uploadImage(result.uri);
           this.props.onSend({ image: chosenImage });
         }
       }
     } catch (err) {
-      console.error(err.message);
+      console.log(err.message);
     }
   }
 
@@ -51,7 +51,7 @@ export default class CustomActions extends Component {
         }
       }
     } catch (err) {
-      console.error(err.message);
+      console.log(err.message);
     }
   }
 
@@ -61,14 +61,14 @@ export default class CustomActions extends Component {
       if (status === "granted") {
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images
-        }).catch(err => console.error(err.message));
+        }).catch(err => console.log(err.message));
         if (!result.cancelled) {
           const chosenImage = await this.uploadImage(result.uri);
           this.props.onSend({ image: chosenImage });
         }
       }
     } catch (err) {
-      console.error(err.message);
+      console.log(err.message);
     }
   }
 
@@ -104,7 +104,7 @@ export default class CustomActions extends Component {
           resolve(xhr.response);
         };
         xhr.onerror = function (err) {
-          console.error(err);
+          console.log(err);
           reject(new TypeError('Network request failed'));
         };
         xhr.responseType = 'blob';
@@ -119,7 +119,7 @@ export default class CustomActions extends Component {
       const chosenImage = await snapshot.ref.getDownloadURL();
       return chosenImage;
     } catch (err) {
-      console.error(err.message);
+      console.log(err.message);
     }
   }
 

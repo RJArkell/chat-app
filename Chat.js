@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Platform, AsyncStorage } from "react-native";
+import { View, Text, StyleSheet, Platform, AsyncStorage } from "react-native";
 import { GiftedChat, InputToolbar, Bubble } from 'react-native-gifted-chat';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import NetInfo from "@react-native-community/netinfo";
@@ -24,7 +24,7 @@ export default class Chat extends React.Component {
       uid: 0
     }
 
-    var firebaseConfig = {
+    let firebaseConfig = {
       apiKey: "AIzaSyBiSms1NYTwB39qOCEZlPlVauMshUSvpn0",
       authDomain: "chat-app-99203.firebaseapp.com",
       databaseURL: "https://chat-app-99203.firebaseio.com",
@@ -50,24 +50,28 @@ export default class Chat extends React.Component {
         });
       }
       if (state.isConnected) {
-        this.authUnsubscribe = firebase.auth().onAuthStateChanged(async user => {
-          if (!user) {
-            await firebase.auth().signInAnonymously();
-          }
+        try {
+          this.authUnsubscribe = firebase.auth().onAuthStateChanged(async user => {
+            if (!user) {
+              await firebase.auth().signInAnonymously();
+            }
 
-          if (this.props.navigation.state.params.name) {
-            this.setUser(user.uid, this.props.navigation.state.params.name);
-          } else {
-            this.setUser(user.uid);
-          }
+            if (this.props.navigation.state.params.name) {
+              this.setUser(user.uid, this.props.navigation.state.params.name);
+            } else {
+              this.setUser(user.uid);
+            }
 
-          this.setState({
-            uid: user.uid,
-            loggedInText: "Hello There"
+            this.setState({
+              uid: user.uid,
+              loggedInText: `Hello there, ${this.props.navigation.state.params.name}!`
+            });
+
+            this.unsubscribe = this.referenceMessages.orderBy('createdAt', 'desc').onSnapshot(this.onCollectionUpdate);
           });
-
-          this.unsubscribe = this.referenceMessages.onSnapshot(this.onCollectionUpdate);
-        });
+        } catch (err) {
+          console.log(err.message);
+        }
       } else {
         this.setState({
           isConnected: false
@@ -90,14 +94,6 @@ export default class Chat extends React.Component {
         avatar: "https://placeimg.com/140/140/tech"
       }
     });
-  }
-
-  get user() {
-    return {
-      name: this.props.navigation.state.params.name,
-      _id: this.state.uid,
-      id: this.state.uid,
-    }
   }
 
   addMessage() {
@@ -152,20 +148,25 @@ export default class Chat extends React.Component {
 
   onCollectionUpdate = (querySnapshot) => {
     const messages = [];
-    querySnapshot.forEach(doc => {
-      var data = doc.data();
-      messages.push({
-        _id: data._id,
-        text: data.text,
-        createdAt: data.createdAt.toDate(),
-        image: data.image || '',
-        location: data.location || null,
-        user: data.user
-      });
-    });
-    this.setState({
-      messages
-    });
+    try {
+      querySnapshot.forEach(doc => {
+        let data = doc.data();
+        messages.push({
+          _id: data._id,
+          text: data.text,
+          createdAt: data.createdAt.toDate(),
+          image: data.image || '',
+          location: data.location || null,
+          user: data.user
+        })
+        this.setState({
+          messages
+        });
+      })
+    }
+    catch (error) {
+      console.log(error.message)
+    }
   };
 
   static navigationOptions = ({ navigation }) => {
@@ -221,7 +222,7 @@ export default class Chat extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: this.props.navigation.state.params.color, justifyContent: "center" }}>
+      <View style={[styles.container, { backgroundColor: this.props.navigation.state.params.colorScheme }]}>
         <Text>{this.state.loggedInText}</Text>
         <GiftedChat
           renderInputToolbar={this.renderInputToolbar.bind(this)}
@@ -236,4 +237,11 @@ export default class Chat extends React.Component {
       </View>
     )
   }
-} 
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#000000",
+  }
+});
