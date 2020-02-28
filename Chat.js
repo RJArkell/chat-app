@@ -54,8 +54,6 @@ export default class Chat extends React.Component {
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
-
-    this.referenceMessages = firebase.firestore().collection("messages");
   }
 
   /**
@@ -88,7 +86,7 @@ export default class Chat extends React.Component {
               uid: user.uid,
               loggedInText: `Hello there, ${this.props.navigation.state.params.name}!`
             });
-
+            this.referenceMessages = firebase.firestore().collection("messages");
             this.unsubscribe = this.referenceMessages.orderBy('createdAt', 'desc').onSnapshot(this.onCollectionUpdate);
           });
         } catch (err) {
