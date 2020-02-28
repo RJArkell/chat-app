@@ -6,6 +6,9 @@ import NetInfo from "@react-native-community/netinfo";
 import MapView from "react-native-maps";
 import CustomActions from "./CustomActions";
 
+/**
+* @description Chat page where users can send and recieve messages
+*/
 
 const firebase = require('firebase');
 require('firebase/firestore');
@@ -24,7 +27,19 @@ export default class Chat extends React.Component {
       uid: 0
     }
 
-    //Initializes database
+
+    /**
+    * //Initializes database
+    * @param {object} firebaseConfig
+    * @param {string} apiKey
+    * @param {string} authDomain
+    * @param {string} databaseURL
+    * @param {string} projectID
+    * @param {string} storageBucket
+    * @param {string} messagingSenderId
+    * @param {string} appId
+    * @param {string} measurementId
+    */
     let firebaseConfig = {
       apiKey: "AIzaSyBiSms1NYTwB39qOCEZlPlVauMshUSvpn0",
       authDomain: "chat-app-99203.firebaseapp.com",
@@ -43,7 +58,12 @@ export default class Chat extends React.Component {
     this.referenceMessages = firebase.firestore().collection("messages");
   }
 
-  //Checks if app is online
+  /**
+   * Checks if app is online
+   * @param  {} NetInfo.fetch
+   * @param  {} 
+   * @param  {true}}
+   */
   componentDidMount() {
     NetInfo.fetch().then(state => {
       if (state.isConnected) {
@@ -89,7 +109,13 @@ export default class Chat extends React.Component {
     this.unsubscribe();
   }
 
-  //Sets default user
+  /**
+  * Sets default user
+  * @function setUser
+  * @param _id
+  * @param name
+  * @returns null
+  */
   setUser = (_id, name = "Anonymous") => {
     this.setState({
       user: {
@@ -100,7 +126,16 @@ export default class Chat extends React.Component {
     });
   }
 
-  //Adds messages to database
+  /**
+   * Adds messages to database
+   * @function addMessage
+   * @param {number}
+   * @param {string}
+   * @param {date}
+   * @param {string}
+   * @param {image}
+   * @param {number}
+   */
   addMessage() {
     this.referenceMessages.add({
       _id: this.state.messages[0]._id,
@@ -113,7 +148,11 @@ export default class Chat extends React.Component {
     });
   }
 
-  //Retrieves messages from AsyncStorage
+  /**
+  *Retrieves messages from AsyncStorage
+  * @async
+  * @function getMessages
+  */
   getMessages = async () => {
     let messages = [];
     try {
@@ -126,7 +165,11 @@ export default class Chat extends React.Component {
     }
   };
 
-  //Deletes messages from AsyncStorage (not currently used)
+  /**
+   * Deletes messages from AsyncStorage (not currently used)
+   * @async
+   * @function deleteMessages
+   */
   deleteMessages = async () => {
     try {
       await AsyncStorage.removeItem("messages");
@@ -135,7 +178,11 @@ export default class Chat extends React.Component {
     }
   };
 
-  //Saves messages to AsyncStorage
+  /**
+  * Saves messages to AsyncStorage
+  * @async
+  * @function saveMessages
+  */
   saveMessages = async () => {
     try {
       await AsyncStorage.setItem('messages', JSON.stringify(this.state.messages));
@@ -155,7 +202,21 @@ export default class Chat extends React.Component {
       });
   }
 
-  //Retrieves all messages from database
+  /**
+  * Retrieves all messages from database
+  * @function onCollectionUpdate
+  *   * @param {string} _id
+  * @param {string} text
+  * @param {number} created.At
+  * @param {string} image
+  * @param {object} location
+  * @param {number} location.longitude
+  * @param {number} location.latitude
+  * @param {object} user
+  * @param {string} user.name
+  * @param {string} user._id
+  * @param {string} user.avatar
+  */
   onCollectionUpdate = (querySnapshot) => {
     const messages = [];
     try {
@@ -235,6 +296,18 @@ export default class Chat extends React.Component {
     )
   }
 
+  /**
+  * @function renderCustomView
+  * @param  {} props
+  * @param  {}
+  * @param  {300}
+  * @param  {200}
+  * @param  {13} 
+  * @param  {5}
+  * @param  {currentMessage.location.longitude}
+  * @param  {0.0922}
+  * @param  {0.0421}
+  */
   render() {
     return (
       <View style={[styles.container, { backgroundColor: this.props.navigation.state.params.colorScheme }]}>
